@@ -16,24 +16,7 @@ export async function loginWithIdCard(formData: FormData) {
     return { error: 'ID dan Password wajib diisi' }
   }
 
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options })
-        },
-        remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', ...options })
-        },
-      },
-    }
-  )
+  const supabase = await createClient()
 
   // Konversi ID menjadi email dummy
   const email = idCard.includes('@') ? idCard : `${idCard}${DIL_DOMAIN}`

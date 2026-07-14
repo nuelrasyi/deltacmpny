@@ -17,18 +17,18 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLi
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const loadMedia = async () => {
+    setIsLoading(true);
+    const data = await getMediaAssets();
+    setMediaAssets(data as MediaAsset[]);
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     if (isOpen) {
       loadMedia();
     }
   }, [isOpen]);
-
-  async function loadMedia() {
-    setIsLoading(true);
-    const data = await getMediaAssets();
-    setMediaAssets(data as MediaAsset[]);
-    setIsLoading(false);
-  }
 
   if (!isOpen) return null;
 

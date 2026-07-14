@@ -2,8 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, Calendar, Users, CheckCircle, MessageCircle, BookOpen } from 'lucide-react';
+import { BrandIcon } from '@/components/ui/BrandIcon';
 import { createClient } from '@/utils/supabase/server';
-import { getBatchesByProgramId } from '@/app/(dashboard)/admin/batches/actions';
+import { getBatchesByProgramId } from '@/app/(dashboard)/superadmin/batches/actions';
 
 export default async function ProgramDetailPage({ params }: { params: { slug: string } }) {
   const supabase = await createClient();
@@ -41,7 +42,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
             {program.media ? (
               <img src={program.media.url} alt={program.title} className="w-full h-full object-cover" />
             ) : (
-              <BookOpen className="w-16 h-16 text-slate-300" />
+              <BrandIcon icon={BookOpen} variant="navy" size="xl" className="opacity-50" />
             )}
           </div>
           <div className="p-8 md:p-12">
@@ -62,6 +63,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Jadwal Terdekat</h2>
           <div className="space-y-4">
             {batches && batches.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               batches.map((batch: any) => (
                 <div key={batch.id} className="flex flex-col md:flex-row items-center justify-between p-6 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all group">
                   <div className="flex-1 w-full mb-6 md:mb-0">

@@ -2,6 +2,7 @@ import React from 'react';
 import { Users, UserPlus, ShieldAlert, CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { getAdmins } from '@/actions/auth';
+import { deleteAdminUser } from './actions';
 
 export default async function AdminsPage() {
   const admins = await getAdmins();
@@ -72,9 +73,14 @@ export default async function AdminsPage() {
                       {new Date(admin.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button className="text-slate-400 hover:text-red-600 text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
-                        Cabut Akses
-                      </button>
+                      <form action={async () => {
+                        'use server';
+                        await deleteAdminUser(admin.id);
+                      }}>
+                        <button type="submit" className="text-slate-400 hover:text-red-600 text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors">
+                          Cabut Akses
+                        </button>
+                      </form>
                     </td>
                   </tr>
                 ))}

@@ -53,3 +53,20 @@ export async function getAdmins() {
   
   return data
 }
+
+export async function deleteAdminUser(id: string) {
+  const adminAuthClient = createAdminClient()
+  
+  // Hapus user dari Auth (ini akan memicu cascade deletion di tabel users jika disetup, atau kita hapus manual jika tidak)
+  const { error } = await adminAuthClient.auth.admin.deleteUser(id)
+  
+  if (error) {
+    return { error: error.message }
+  }
+
+  // Kita juga hapus dari public.users untuk berjaga-jaga jika cascade delete tidak aktif
+  await adminAuthClient.from('users').delete().eq('id', id)
+
+  revalidatePath('/superadmin/admins')
+  return { success: true }
+}

@@ -69,6 +69,7 @@ export default async function ProgramPage() {
                 <p className="text-slate-500">Saat ini belum ada program pelatihan yang tersedia.</p>
               </div>
             ) : (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               programs.map((program: any) => (
                 <div key={program.id} className="group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-primary-500/10 hover:-translate-y-2 transition-all duration-300 flex flex-col">
                   <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden flex items-center justify-center">

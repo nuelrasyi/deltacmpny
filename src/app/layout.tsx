@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Plus_Jakarta_Sans, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-plus-jakarta-sans",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800", "900"],
+  variable: "--font-barlow-condensed",
 });
 
 export const metadata: Metadata = {
-  title: "Portal Admin | PT Delta Integrated Learning",
-  description: "Sistem Manajemen Pembelajaran PT Delta Integrated Learning",
+  title: {
+    template: "%s | DIL FMIPA UM",
+    default: "DIL FMIPA UM",
+  },
+  description: "Sistem Manajemen Pembelajaran dan Uji Kompetensi DIL FMIPA Universitas Negeri Malang",
 };
 
 export default function RootLayout({
@@ -20,7 +29,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} font-sans antialiased`}
+      className={`${plusJakartaSans.variable} ${barlowCondensed.variable} font-sans antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>

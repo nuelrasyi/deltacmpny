@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, BookOpen, FileText, Settings, LogOut, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, FileText, Settings, LogOut, Bell, Network, ShieldAlert } from 'lucide-react';
 import RealtimeClock from '@/components/RealtimeClock';
 import SidebarLink from '@/components/SidebarLink';
 import { logout } from '@/actions/auth';
@@ -26,9 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" className="w-8 h-8 object-contain mr-3" />
           ) : (
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center mr-3 shadow-lg shadow-primary-600/30">
-              <span className="text-white font-bold text-lg">D</span>
-            </div>
+            <img src="/icon.svg" alt="Logo" className="w-8 h-8 object-contain mr-3" />
           )}
           <span className="text-lg font-bold tracking-widest text-white">DIL CMS</span>
         </div>
@@ -38,19 +36,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
         
         <nav className="flex-1 px-4 space-y-1">
-          <SidebarLink href="/admin" iconName="LayoutDashboard" exact>
+          <SidebarLink href="/superadmin" iconName="LayoutDashboard" exact>
             Dashboard
           </SidebarLink>
-          <SidebarLink href="/admin/programs" iconName="BookOpen">
+          <SidebarLink href="/superadmin/programs" iconName="BookOpen">
             Program
           </SidebarLink>
-          <SidebarLink href="/admin/batches" iconName="Users">
+          <SidebarLink href="/superadmin/batches" iconName="Users">
             Jadwal & Batch
           </SidebarLink>
-          <SidebarLink href="/admin/articles" iconName="FileText">
+          <SidebarLink href="/superadmin/articles" iconName="FileText">
             Artikel
           </SidebarLink>
-          <SidebarLink href="/admin/about" iconName="Info">
+          <SidebarLink href="/superadmin/about" iconName="Info">
             Tentang Kami
           </SidebarLink>
         </nav>
@@ -59,7 +57,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="px-2 pb-3 pt-1 text-xs font-semibold text-slate-500 uppercase tracking-wider">
             Superadmin
           </div>
-          <SidebarLink href="/superadmin" iconName="Settings" exact>
+          <SidebarLink href="/superadmin/settings" iconName="Settings" exact>
             Pengaturan
           </SidebarLink>
           <SidebarLink href="/superadmin/admins" iconName="Users">

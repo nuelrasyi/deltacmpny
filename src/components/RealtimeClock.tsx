@@ -8,7 +8,9 @@ export default function RealtimeClock() {
 
   useEffect(() => {
     // Set initial time
-    setTime(new Date())
+    setTimeout(() => {
+      setTime(new Date())
+    }, 0)
     
     // Update every second
     const timer = setInterval(() => {

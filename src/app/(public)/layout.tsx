@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { MapPin, Mail, Phone } from 'lucide-react';
 import PublicNavbar from '@/components/PublicNavbar';
 import FloatingWhatsApp from '@/components/FloatingWhatsApp';
+import Chatbot from '@/components/Chatbot';
 import { getCompanyProfile } from '@/app/(dashboard)/superadmin/actions';
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ export default async function PublicLayout({ children }: { children: React.React
       </main>
 
       <FloatingWhatsApp />
+      <Chatbot />
 
       {/* Footer */}
       <footer className="bg-slate-950 text-slate-300 pt-20 pb-8 relative overflow-hidden border-t border-slate-900">
@@ -36,9 +38,7 @@ export default async function PublicLayout({ children }: { children: React.React
                 {logoUrl ? (
                   <img src={logoUrl} alt="Logo" className="h-12 w-auto max-w-[240px] object-contain" />
                 ) : (
-                  <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                    <span className="text-white font-extrabold text-2xl">D</span>
-                  </div>
+                  <img src="/icon.svg" alt="Logo" className="h-12 w-12 object-contain group-hover:scale-105 transition-transform" />
                 )}
                 <div className="flex flex-col leading-tight justify-center">
                   {!logoUrl && <span className="text-2xl font-extrabold text-white tracking-tight">DIL</span>}

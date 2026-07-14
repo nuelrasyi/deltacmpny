@@ -26,6 +26,9 @@ export interface CompanyProfile {
   whatsapp_number: string;
   address: string;
   email: string;
+  linkedin_url?: string | null;
+  instagram_url?: string | null;
+  facebook_url?: string | null;
   created_at: string;
   updated_at: string;
 }

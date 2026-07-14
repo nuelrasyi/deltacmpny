@@ -38,13 +38,19 @@ export async function updateSession(request: NextRequest) {
 
   const isAuthRoute = request.nextUrl.pathname.startsWith('/login')
   const isSuperadminRoute = request.nextUrl.pathname.startsWith('/superadmin')
-  const isDashboardRoute = request.nextUrl.pathname.startsWith('/admin') || isSuperadminRoute
+  const isLegacyAdminRoute = request.nextUrl.pathname.startsWith('/admin')
 
   // Protect dashboard routes
-  if (isDashboardRoute && !user) {
+  if (isSuperadminRoute && !user) {
     const url = new URL('/login', request.url)
     url.searchParams.set('next', request.nextUrl.pathname)
     return NextResponse.redirect(url)
+  }
+
+  // Redirect old admin links to superadmin
+  if (isLegacyAdminRoute) {
+    const url = request.nextUrl.pathname.replace(/^\/admin/, '/superadmin')
+    return NextResponse.redirect(new URL(url, request.url))
   }
 
   if (user && (isSuperadminRoute || isAuthRoute)) {
@@ -65,15 +71,13 @@ export async function updateSession(request: NextRequest) {
 
     // Superadmin role protection
     if (isSuperadminRoute && profile?.role !== 'superadmin') {
-      return NextResponse.redirect(new URL('/admin', request.url))
+      // If they somehow have the wrong role, redirect to home or login
+      return NextResponse.redirect(new URL('/', request.url))
     }
 
     // Redirect to dashboard if logged in and trying to access login page
     if (isAuthRoute) {
-      if (profile?.role === 'superadmin') {
-        return NextResponse.redirect(new URL('/superadmin', request.url))
-      }
-      return NextResponse.redirect(new URL('/admin', request.url))
+      return NextResponse.redirect(new URL('/superadmin', request.url))
     }
   }
 

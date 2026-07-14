@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, BookOpen, Star, Users, Trophy, ChevronRight, Award, ShieldCheck, Clock, Calendar } from 'lucide-react';
+import { BrandIcon } from '@/components/ui/BrandIcon';
 import { createClient } from '@/utils/supabase/server';
 
 export default async function HomePage() {
@@ -50,7 +51,7 @@ export default async function HomePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8 animate-fade-in-up">
-              <Award className="w-5 h-5 text-amber-400" />
+              <BrandIcon icon={Award} variant="secondary" size="sm" className="shadow-sm" />
               <span className="text-sm font-bold text-white tracking-wide">LISENSI RESMI BNSP RI</span>
             </div>
 
@@ -80,7 +81,7 @@ export default async function HomePage() {
             <img src="/logo-bnsp.svg" alt="Logo BNSP RI" className="w-16 h-auto object-contain" />
             <div>
               <p className="text-sm font-bold text-slate-900 uppercase tracking-widest">Terlisensi Oleh</p>
-              <p className="text-xl font-black text-slate-700">BNSP RI</p>
+              <p className="text-xl font-black font-heading text-slate-700">BNSP RI</p>
             </div>
           </div>
 
@@ -90,7 +91,7 @@ export default async function HomePage() {
             <img src="/logo-um.svg" alt="Logo FMIPA UM" className="w-16 h-auto object-contain" />
             <div>
               <p className="text-sm font-bold text-slate-900 uppercase tracking-widest">Mitra Strategis</p>
-              <p className="text-xl font-black text-slate-700">FMIPA UM</p>
+              <p className="text-xl font-black font-heading text-slate-700">FMIPA UM</p>
             </div>
           </div>
 
@@ -100,7 +101,7 @@ export default async function HomePage() {
             <img src="/logo-tuk.svg" alt="Logo TUK FMIPA UM" className="w-16 h-auto object-contain" />
             <div>
               <p className="text-sm font-bold text-slate-900 uppercase tracking-widest">Tempat Uji Kompetensi</p>
-              <p className="text-xl font-black text-slate-700">TUK FMIPA UM</p>
+              <p className="text-xl font-black font-heading text-slate-700">TUK FMIPA UM</p>
             </div>
           </div>
         </div>
@@ -132,7 +133,7 @@ export default async function HomePage() {
                     {program.media ? (
                       <img src={program.media.url} alt={program.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     ) : (
-                      <BookOpen className="w-16 h-16 text-slate-300" />
+                      <BrandIcon icon={BookOpen} variant="navy" size="lg" className="opacity-50" />
                     )}
                     <div className="absolute top-4 left-4 z-20">
                       <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-white text-slate-900 shadow-md">
@@ -170,8 +171,8 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 mb-6">
-                <Star className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-bold tracking-wider uppercase">Keunggulan Kami</span>
+                <BrandIcon icon={Star} variant="secondary" size="sm" />
+                <span className="text-xs font-bold tracking-wider uppercase ml-1">Keunggulan Kami</span>
               </div>
               <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-6">Kualitas Akademis & <span className="text-primary-400">Praktek Industri</span></h2>
               <p className="text-lg text-slate-400 mb-10 leading-relaxed">
@@ -185,9 +186,7 @@ export default async function HomePage() {
                   { title: 'Instruktur Tersertifikasi Asesor', desc: 'Diajar langsung oleh praktisi yang juga berstatus sebagai Asesor Kompetensi resmi.' }
                 ].map((feature, i) => (
                   <div key={i} className="flex gap-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/5">
-                      <CheckCircle2 className="w-6 h-6 text-primary-400" />
-                    </div>
+                    <BrandIcon icon={CheckCircle2} variant="primary" size="md" />
                     <div>
                       <h4 className="text-xl font-bold mb-2">{feature.title}</h4>
                       <p className="text-slate-400 text-sm leading-relaxed">{feature.desc}</p>

@@ -25,6 +25,9 @@ export async function updateCompanyProfile(formData: FormData) {
   const address = formData.get('address') as string
   const description = formData.get('description') as string
   const about_us = formData.get('about_us') as string | null
+  const linkedin_url = formData.get('linkedin_url') as string | null
+  const instagram_url = formData.get('instagram_url') as string | null
+  const facebook_url = formData.get('facebook_url') as string | null
   const logo_id = formData.get('logo_id') as string
 
   const supabase = await createClient()
@@ -41,6 +44,9 @@ export async function updateCompanyProfile(formData: FormData) {
     address,
     description,
     ...(about_us !== null && { about_us }),
+    ...(linkedin_url !== null && { linkedin_url }),
+    ...(instagram_url !== null && { instagram_url }),
+    ...(facebook_url !== null && { facebook_url }),
     updated_at: new Date().toISOString()
   }
 
