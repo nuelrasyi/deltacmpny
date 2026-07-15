@@ -16,14 +16,10 @@ export default async function AboutPage() {
 
   const members = await getOrganizationMembers();
   
-  const leader = members.find(m => m.order_index === 0) || {
-    name: 'Belum Diatur',
-    position: 'Ketua TUK',
-    role: 'Pimpinan Utama',
-    avatar_url: null,
-  };
-
-  const subordinates = members.filter(m => m.order_index > 0).sort((a, b) => a.order_index - b.order_index);
+  const sortedMembers = [...members].sort((a, b) => a.order_index - b.order_index);
+  
+  const leader = sortedMembers.length > 0 ? sortedMembers[0] : null;
+  const subordinates = sortedMembers.slice(1);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 relative overflow-hidden">
@@ -96,7 +92,8 @@ export default async function AboutPage() {
           </div>
         </section>
 
-        {/* Struktur Organisasi */}
+        {/* Struktur Organisasi - Only show if members exist */}
+        {leader && (
         <section className="py-20 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
@@ -129,52 +126,57 @@ export default async function AboutPage() {
                 <p className="text-slate-600 font-medium">{leader.name}</p>
               </div>
 
-              {/* Vertical line from Leader to Horizontal axis */}
-              <div className="w-px h-10 bg-slate-300"></div>
+              {subordinates.length > 0 && (
+                <>
+                  {/* Vertical line from Leader to Horizontal axis */}
+                  <div className="w-px h-10 bg-slate-300"></div>
 
-              {/* Horizontal axis and Subordinates */}
-              <div className="w-full flex justify-center relative mt-0 px-4">
-                <div className="flex w-full max-w-6xl justify-between">
-                  {subordinates.map((member, index) => (
-                    <div key={index} className="relative flex flex-col items-center flex-1 px-2">
-                      
-                      {/* Horizontal connecting lines */}
-                      {index !== 0 && (
-                        <div className="absolute top-0 right-1/2 w-1/2 border-t-2 border-slate-300"></div>
-                      )}
-                      {index !== subordinates.length - 1 && (
-                        <div className="absolute top-0 left-1/2 w-1/2 border-t-2 border-slate-300"></div>
-                      )}
-
-                      {/* Vertical connecting line down to the subordinate */}
-                      <div className="w-px h-8 bg-slate-300"></div>
-
-                      {/* Subordinate Node (Clean, No Card Background) */}
-                      <div className="flex flex-col items-center text-center mt-4">
-                        <div className="w-20 h-20 mb-4 rounded-full bg-slate-50 border-4 border-white shadow-lg shadow-slate-200 flex items-center justify-center overflow-hidden">
-                          {member.avatar_url ? (
-                            <img src={member.avatar_url} alt={member.name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="text-3xl font-black font-heading text-slate-300">
-                              {member.name.charAt(0)}
-                            </div>
+                  {/* Horizontal axis and Subordinates */}
+                  <div className="w-full flex justify-center relative mt-0 px-4">
+                    <div className="flex w-full max-w-6xl justify-between">
+                      {subordinates.map((member, index) => (
+                        <div key={index} className="relative flex flex-col items-center flex-1 px-2">
+                          
+                          {/* Horizontal connecting lines */}
+                          {index !== 0 && (
+                            <div className="absolute top-0 right-1/2 w-1/2 border-t-2 border-slate-300"></div>
                           )}
-                        </div>
-                        <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold tracking-widest uppercase mb-2">
-                          {member.role}
-                        </div>
-                        <h4 className="text-xl font-black font-heading text-slate-900 mb-1 leading-tight">{member.position}</h4>
-                        <p className="text-slate-500 text-sm font-medium leading-snug">{member.name}</p>
-                      </div>
+                          {index !== subordinates.length - 1 && (
+                            <div className="absolute top-0 left-1/2 w-1/2 border-t-2 border-slate-300"></div>
+                          )}
 
+                          {/* Vertical connecting line down to the subordinate */}
+                          <div className="w-px h-8 bg-slate-300"></div>
+
+                          {/* Subordinate Node (Clean, No Card Background) */}
+                          <div className="flex flex-col items-center text-center mt-4">
+                            <div className="w-20 h-20 mb-4 rounded-full bg-slate-50 border-4 border-white shadow-lg shadow-slate-200 flex items-center justify-center overflow-hidden">
+                              {member.avatar_url ? (
+                                <img src={member.avatar_url} alt={member.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="text-3xl font-black font-heading text-slate-300">
+                                  {member.name.charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold tracking-widest uppercase mb-2">
+                              {member.role}
+                            </div>
+                            <h4 className="text-xl font-black font-heading text-slate-900 mb-1 leading-tight">{member.position}</h4>
+                            <p className="text-slate-500 text-sm font-medium leading-snug">{member.name}</p>
+                          </div>
+
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                </>
+              )}
 
             </div>
           </div>
         </section>
+        )}
 
         {/* Contact Info & Maps */}
         <section className="py-20 bg-white border-t border-slate-100 relative">

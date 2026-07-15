@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BookOpen, Users, FileText, Settings, Info, LucideIcon } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Users, FileText, Settings, Info, Network, LucideIcon } from 'lucide-react';
 
 const IconMap: Record<string, LucideIcon> = {
   LayoutDashboard,
@@ -12,6 +12,7 @@ const IconMap: Record<string, LucideIcon> = {
   FileText,
   Settings,
   Info,
+  Network,
 };
 
 interface SidebarLinkProps {

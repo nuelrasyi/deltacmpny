@@ -6,8 +6,9 @@ export const metadata = {
   title: 'Edit Anggota Organisasi - DIL CMS',
 }
 
-export default async function EditOrganizationMemberPage({ params }: { params: { id: string } }) {
-  const member = await getOrganizationMemberById(params.id)
+export default async function EditOrganizationMemberPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const member = await getOrganizationMemberById(id)
 
   if (!member) {
     notFound()

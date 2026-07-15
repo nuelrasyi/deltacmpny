@@ -8,7 +8,8 @@ import { getBatchById, updateBatch } from '../../actions'
 import { getPrograms } from '../../../programs/actions'
 import toast from 'react-hot-toast'
 
-export default function EditBatchPage({ params }: { params: { id: string } }) {
+export default function EditBatchPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
@@ -22,7 +23,7 @@ export default function EditBatchPage({ params }: { params: { id: string } }) {
       try {
         const [programsData, batchData] = await Promise.all([
           getPrograms(),
-          getBatchById(params.id)
+          getBatchById(id)
         ])
         
         if (!batchData) {
@@ -40,13 +41,13 @@ export default function EditBatchPage({ params }: { params: { id: string } }) {
       }
     }
     fetchData()
-  }, [params.id, router])
+  }, [id, router])
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
     setError(null)
     
-    const result = await updateBatch(params.id, formData)
+    const result = await updateBatch(id, formData)
     
     if (result.error) {
       setError(result.error)
@@ -111,9 +112,9 @@ export default function EditBatchPage({ params }: { params: { id: string } }) {
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Nama Batch <span className="text-red-500">*</span></label>
             <input 
               type="text" 
-              name="batch_number"
+              name="name"
               required
-              defaultValue={batch.batch_number}
+              defaultValue={batch.name}
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
               placeholder="Misal: Batch Agustus 2026"
             />
@@ -149,9 +150,9 @@ export default function EditBatchPage({ params }: { params: { id: string } }) {
               defaultValue={batch.status}
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
             >
-              <option value="Pendaftaran">Pendaftaran (Terbuka)</option>
-              <option value="Aktif">Aktif (Sedang Berjalan)</option>
-              <option value="Selesai">Selesai / Ditutup</option>
+              <option value="upcoming">Pendaftaran (Terbuka)</option>
+              <option value="ongoing">Aktif (Sedang Berjalan)</option>
+              <option value="completed">Selesai / Ditutup</option>
             </select>
             <p className="mt-2 text-xs text-slate-500">Ubah status ke "Selesai" jika jadwal telah selesai atau pendaftaran ditutup.</p>
           </div>

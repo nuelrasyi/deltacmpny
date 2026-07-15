@@ -91,7 +91,7 @@ export default function NewBatchPage() {
             <label className="block text-sm font-medium text-slate-700 mb-1.5">Nama Batch <span className="text-red-500">*</span></label>
             <input 
               type="text" 
-              name="batch_number"
+              name="name"
               required
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
               placeholder="Misal: Batch Agustus 2026"
@@ -123,12 +123,12 @@ export default function NewBatchPage() {
             <select 
               name="status"
               required
-              defaultValue="Pendaftaran"
+              defaultValue="upcoming"
               className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
             >
-              <option value="Pendaftaran">Pendaftaran (Terbuka)</option>
-              <option value="Aktif">Aktif (Sedang Berjalan)</option>
-              <option value="Selesai">Selesai</option>
+              <option value="upcoming">Pendaftaran (Terbuka)</option>
+              <option value="ongoing">Aktif (Sedang Berjalan)</option>
+              <option value="completed">Selesai</option>
             </select>
           </div>
 

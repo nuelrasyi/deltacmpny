@@ -12,7 +12,7 @@ export async function getCompanyProfile() {
     .maybeSingle()
 
   if (error) {
-    console.error('Error fetching company profile:', error)
+    console.error('Error fetching company profile:', { message: error.message, details: error.details, hint: error.hint, code: error.code })
     return null
   }
   return data

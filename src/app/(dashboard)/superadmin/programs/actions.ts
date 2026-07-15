@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { Program } from '@/types/database.types'
 
 export async function getPrograms() {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('programs')
@@ -25,11 +25,53 @@ export async function getPrograms() {
   return data
 }
 
+export async function getCategories() {
+  const supabase = supabaseAdmin
+
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id, name')
+    .order('name', { ascending: true })
+
+  if (error) {
+    console.error('Error fetching categories:', error)
+    return []
+  }
+
+  return data
+}
+
+export async function createCategory(name: string) {
+  const supabase = supabaseAdmin
+
+  // Generate a basic slug
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+  
+  const { data, error } = await supabase
+    .from('categories')
+    .insert([{ name, slug }])
+    .select('id, name')
+    .single()
+
+  if (error) {
+    console.error('Error creating category:', error)
+    throw new Error('Gagal membuat kategori baru')
+  }
+
+  return data
+}
+
 export async function createProgram(formData: FormData) {
   const title = formData.get('title') as string
   const category_id = formData.get('category_id') as string
   const description = formData.get('description') as string
-  const price = formData.get('price') ? parseFloat(formData.get('price') as string) : 0
+  const priceRaw = formData.get('price') as string
+  const price = priceRaw ? parseFloat(priceRaw.replace(/\./g, '')) : 0
+  const originalPriceRaw = formData.get('original_price') as string
+  const original_price = originalPriceRaw ? parseFloat(originalPriceRaw.replace(/\./g, '')) : null
+  const location = formData.get('location') as string | null
+  const facilitiesRaw = formData.get('facilities') as string
+  const facilities = facilitiesRaw ? facilitiesRaw.split('\n').map(f => f.trim()).filter(f => f) : null
   const is_active = formData.get('is_active') === 'true'
   const media_asset_id = formData.get('media_asset_id') as string | null
 
@@ -64,9 +106,12 @@ export async function createProgram(formData: FormData) {
     .insert({
       title,
       slug,
-      category_id: parseInt(category_id),
+      category_id,
       description,
       price,
+      original_price,
+      location,
+      facilities,
       is_active,
       media_asset_id: media_asset_id || null
     })
@@ -99,7 +144,7 @@ export async function deleteProgram(id: string | number) {
 }
 
 export async function getProgramById(id: string | number) {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('programs')
@@ -120,7 +165,13 @@ export async function updateProgram(id: string | number, formData: FormData) {
   const title = formData.get('title') as string
   const category_id = formData.get('category_id') as string
   const description = formData.get('description') as string
-  const price = formData.get('price') ? parseFloat(formData.get('price') as string) : 0
+  const priceRaw = formData.get('price') as string
+  const price = priceRaw ? parseFloat(priceRaw.replace(/\./g, '')) : 0
+  const originalPriceRaw = formData.get('original_price') as string
+  const original_price = originalPriceRaw ? parseFloat(originalPriceRaw.replace(/\./g, '')) : null
+  const location = formData.get('location') as string | null
+  const facilitiesRaw = formData.get('facilities') as string
+  const facilities = facilitiesRaw ? facilitiesRaw.split('\n').map(f => f.trim()).filter(f => f) : null
   const is_active = formData.get('is_active') === 'true'
   const media_asset_id = formData.get('media_asset_id') as string
 
@@ -153,9 +204,12 @@ export async function updateProgram(id: string | number, formData: FormData) {
   const updateData: any = {
     title,
     slug,
-    category_id: parseInt(category_id),
+    category_id,
     description,
     price,
+    original_price,
+    location,
+    facilities,
     is_active,
     updated_at: new Date().toISOString()
   }

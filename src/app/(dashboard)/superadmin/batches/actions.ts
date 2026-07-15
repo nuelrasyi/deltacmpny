@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function getBatches() {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('batches')
@@ -24,7 +24,7 @@ export async function getBatches() {
 }
 
 export async function getBatchesByProgramId(programId: string) {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('batches')
@@ -41,12 +41,12 @@ export async function getBatchesByProgramId(programId: string) {
 
 export async function createBatch(formData: FormData) {
   const program_id = formData.get('program_id') as string
-  const batch_number = formData.get('batch_number') as string
+  const name = formData.get('name') as string
   const start_date = formData.get('start_date') as string
   const end_date = formData.get('end_date') as string
-  const status = formData.get('status') as string || 'Pendaftaran'
+  const status = formData.get('status') as string || 'upcoming'
 
-  if (!program_id || !batch_number || !start_date) {
+  if (!program_id || !name || !start_date) {
     return { error: 'Program, Nama Batch, dan Tanggal Mulai wajib diisi' }
   }
 
@@ -59,7 +59,7 @@ export async function createBatch(formData: FormData) {
     .from('batches')
     .insert({
       program_id,
-      batch_number,
+      name,
       start_date,
       end_date: end_date || null,
       status
@@ -94,7 +94,7 @@ export async function deleteBatch(id: string | number) {
 }
 
 export async function getBatchById(id: string) {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
   const { data, error } = await supabase
     .from('batches')
     .select('*')
@@ -110,12 +110,12 @@ export async function getBatchById(id: string) {
 
 export async function updateBatch(id: string, formData: FormData) {
   const program_id = formData.get('program_id') as string
-  const batch_number = formData.get('batch_number') as string
+  const name = formData.get('name') as string
   const start_date = formData.get('start_date') as string
   const end_date = formData.get('end_date') as string
   const status = formData.get('status') as string
 
-  if (!program_id || !batch_number || !start_date || !status) {
+  if (!program_id || !name || !start_date || !status) {
     return { error: 'Program, Nama Batch, Tanggal Mulai, dan Status wajib diisi' }
   }
 
@@ -128,7 +128,7 @@ export async function updateBatch(id: string, formData: FormData) {
     .from('batches')
     .update({
       program_id,
-      batch_number,
+      name,
       start_date,
       end_date: end_date || null,
       status

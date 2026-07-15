@@ -38,7 +38,7 @@ export default async function BatchesPage() {
                 batches.map((batch: any) => (
                   <tr key={batch.id} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-slate-900">{batch.batch_number}</div>
+                      <div className="text-sm font-semibold text-slate-900">{batch.name}</div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-slate-600 line-clamp-1">{batch.program?.title || '-'}</div>
@@ -52,11 +52,11 @@ export default async function BatchesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${
-                        batch.status === 'Aktif' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                        batch.status === 'Selesai' ? 'bg-slate-100 text-slate-700 border-slate-200' :
+                        batch.status === 'ongoing' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                        batch.status === 'completed' ? 'bg-slate-100 text-slate-700 border-slate-200' :
                         'bg-blue-50 text-blue-700 border-blue-200'
                       }`}>
-                        {batch.status}
+                        {batch.status === 'ongoing' ? 'Aktif' : batch.status === 'completed' ? 'Selesai' : 'Pendaftaran'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

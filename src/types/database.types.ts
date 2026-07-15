@@ -51,6 +51,9 @@ export interface Program {
   media_asset_id: string | null;
   media?: MediaAsset;
   price?: number;
+  original_price?: number;
+  location?: string | null;
+  facilities?: string[] | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

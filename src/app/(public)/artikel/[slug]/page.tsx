@@ -2,19 +2,20 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, User, Calendar, BookOpen } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-export default async function ArticleDetailPage({ params }: { params: { slug: string } }) {
-  const supabase = await createClient();
+export default async function ArticleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const supabase = supabaseAdmin;
 
   const { data: article } = await supabase
     .from('articles')
     .select(`
       *,
       author:users(name),
-      media:media_assets(url)
+      media:media_assets!media_asset_id(id, url)
     `)
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single();
 
   if (!article) {

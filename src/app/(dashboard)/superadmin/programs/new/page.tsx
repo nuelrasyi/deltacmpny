@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Upload, Save, Loader2, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
-import { createProgram } from '../actions'
+import { createProgram, getCategories, createCategory } from '../actions'
 import MediaLibraryModal from '@/components/MediaLibraryModal'
 import { MediaAsset } from '@/types/database.types'
 import toast from 'react-hot-toast'
@@ -13,10 +13,42 @@ export default function NewProgramPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
   
   // Media selection
   const [isMediaModalOpen, setIsMediaModalOpen] = useState(false)
   const [selectedMedia, setSelectedMedia] = useState<MediaAsset | null>(null)
+
+  useEffect(() => {
+    async function loadCategories() {
+      const data = await getCategories()
+      setCategories(data || [])
+    }
+    loadCategories()
+  }, [])
+
+  const handleCategoryChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    if (val === 'ADD_NEW') {
+      const name = window.prompt("Masukkan nama kategori baru:");
+      if (name && name.trim()) {
+        try {
+          const newCat = await createCategory(name.trim());
+          setCategories(prev => [...prev, newCat]);
+          setSelectedCategoryId(newCat.id);
+          toast.success("Kategori berhasil ditambahkan");
+        } catch(err) {
+          toast.error("Gagal menambahkan kategori");
+          setSelectedCategoryId('');
+        }
+      } else {
+        setSelectedCategoryId('');
+      }
+    } else {
+      setSelectedCategoryId(val);
+    }
+  }
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
@@ -104,25 +136,58 @@ export default function NewProgramPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Kategori ID <span className="text-red-500">*</span></label>
-              <input 
-                type="number" 
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Kategori Program <span className="text-red-500">*</span></label>
+              <select 
                 name="category_id"
                 required
-                defaultValue="1"
+                value={selectedCategoryId}
+                onChange={handleCategoryChange}
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
-                placeholder="ID Kategori (Contoh: 1)"
+              >
+                <option value="">Pilih Kategori</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+                <option value="ADD_NEW" className="font-bold text-primary-600 bg-primary-50">+ Tambah Kategori Baru</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Lokasi Pelaksanaan</label>
+              <input 
+                type="text" 
+                name="location"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
+                placeholder="Misal: TUK FMIPA UM / Online"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Harga (Rp)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Harga Normal/Coret (Rp)</label>
               <input 
-                type="number" 
+                type="text" 
+                name="original_price"
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  e.target.value = val ? parseInt(val, 10).toLocaleString('id-ID') : '';
+                }}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
+                placeholder="Misal: 8.000.000"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Harga Jual/Promo (Rp)</label>
+              <input 
+                type="text" 
                 name="price"
                 defaultValue="0"
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  e.target.value = val ? parseInt(val, 10).toLocaleString('id-ID') : '';
+                }}
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none"
-                placeholder="Misal: 5000000"
+                placeholder="Misal: 5.000.000"
               />
             </div>
 
@@ -130,9 +195,19 @@ export default function NewProgramPage() {
               <label className="block text-sm font-medium text-slate-700 mb-1.5">Deskripsi Program</label>
               <textarea 
                 name="description"
-                rows={5}
+                rows={4}
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none resize-y"
                 placeholder="Tuliskan deskripsi lengkap mengenai program ini..."
+              ></textarea>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">Fasilitas (Satu fasilitas per baris)</label>
+              <textarea 
+                name="facilities"
+                rows={4}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all outline-none resize-y leading-relaxed"
+                placeholder="Sertifikat BNSP&#10;Modul / Record Training&#10;Gabung forum komunitas alumni"
               ></textarea>
             </div>
 

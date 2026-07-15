@@ -9,7 +9,8 @@ import MediaLibraryModal from '@/components/MediaLibraryModal'
 import { MediaAsset } from '@/types/database.types'
 import toast from 'react-hot-toast'
 
-export default function EditArticlePage({ params }: { params: { id: string } }) {
+export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
@@ -23,7 +24,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     async function loadData() {
-      const data = await getArticleById(params.id)
+      const data = await getArticleById(id)
       if (data) {
         setArticle(data)
         if (data.media) {
@@ -35,7 +36,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       setInitialLoading(false)
     }
     loadData()
-  }, [params.id])
+  }, [id])
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
@@ -47,7 +48,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
     }
 
     // Call server action
-    const result = await updateArticle(params.id, formData)
+    const result = await updateArticle(id, formData)
     
     if (result.error) {
       setError(result.error)

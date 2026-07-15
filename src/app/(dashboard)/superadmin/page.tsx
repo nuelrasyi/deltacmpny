@@ -1,9 +1,9 @@
 import React from 'react';
 import { Users, BookOpen, FileText, CheckCircle2, Clock, BarChart3 } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
 
   // Fetch real counts from Supabase
   const [

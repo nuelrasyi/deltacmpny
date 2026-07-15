@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { Article } from '@/types/database.types'
 
 export async function getArticles() {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('articles')
@@ -98,7 +98,7 @@ export async function createArticle(formData: FormData) {
 }
 
 export async function getArticleById(id: string | number) {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
 
   const { data, error } = await supabase
     .from('articles')

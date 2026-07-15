@@ -38,7 +38,7 @@ export async function createAdminUser(formData: FormData) {
 }
 
 export async function getAdmins() {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
   
   // We fetch from the public.users table where role is 'admin' or 'superadmin'
   const { data, error } = await supabase

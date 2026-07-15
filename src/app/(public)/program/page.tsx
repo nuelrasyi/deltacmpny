@@ -1,22 +1,44 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Search, Award, BookOpen, Clock, Users } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import ProgramFilters from './components/ProgramFilters';
+import ProgramSearch from './components/ProgramSearch';
 
-export default async function ProgramPage() {
-  const supabase = await createClient();
+export default async function ProgramPage(props: { searchParams: Promise<{ category?: string; q?: string }> }) {
+  const searchParams = await props.searchParams;
+  const activeCategory = searchParams?.category || '';
+  const searchQuery = searchParams?.q || '';
+  const supabase = supabaseAdmin;
   
-  const { data: programsData, error } = await supabase
+  let query = supabase
     .from('programs')
     .select(`
       *,
       category:categories(name),
-      media:media_assets(url)
+      media:media_assets!media_asset_id(id, url)
     `)
     .eq('is_active', true)
     .order('created_at', { ascending: false });
 
+  if (activeCategory) {
+    query = query.eq('category_id', activeCategory);
+  }
+
+  if (searchQuery) {
+    query = query.ilike('title', `%${searchQuery}%`);
+  }
+
+  const { data: programsData, error } = await query;
+
   const programs = programsData || [];
+
+  const { data: categoriesData } = await supabase
+    .from('categories')
+    .select('id, name')
+    .order('name');
+  
+  const categories = categoriesData || [];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -35,16 +57,21 @@ export default async function ProgramPage() {
             </p>
             
             {/* Search Bar */}
-            <div className="relative max-w-2xl mx-auto">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-slate-400" />
+            <Suspense fallback={
+              <div className="relative max-w-2xl mx-auto">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-slate-400" />
+                </div>
+                <input 
+                  type="text" 
+                  className="block w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white/20 backdrop-blur-md transition-all" 
+                  placeholder="Cari program sertifikasi..." 
+                  readOnly
+                />
               </div>
-              <input 
-                type="text" 
-                className="block w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-full text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white/20 backdrop-blur-md transition-all" 
-                placeholder="Cari program sertifikasi..." 
-              />
-            </div>
+            }>
+              <ProgramSearch />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -53,13 +80,8 @@ export default async function ProgramPage() {
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Filters (Mock) */}
-          <div className="flex flex-wrap items-center gap-4 mb-12">
-            <button className="px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-bold shadow-md">Semua Program</button>
-            <button className="px-6 py-2.5 rounded-full bg-white text-slate-700 border border-slate-200 text-sm font-bold hover:bg-slate-100 transition-colors">Keselamatan Kerja</button>
-            <button className="px-6 py-2.5 rounded-full bg-white text-slate-700 border border-slate-200 text-sm font-bold hover:bg-slate-100 transition-colors">Teknologi Informasi</button>
-            <button className="px-6 py-2.5 rounded-full bg-white text-slate-700 border border-slate-200 text-sm font-bold hover:bg-slate-100 transition-colors">Manajemen</button>
-          </div>
+          {/* Filters Component */}
+          <ProgramFilters categories={categories} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {programs.length === 0 ? (

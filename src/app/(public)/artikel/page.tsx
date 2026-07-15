@@ -1,16 +1,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { BookOpen, Calendar, ChevronRight } from 'lucide-react';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export default async function ArtikelPage() {
-  const supabase = await createClient();
+  const supabase = supabaseAdmin;
   
   const { data: articlesData } = await supabase
     .from('articles')
     .select(`
       *,
-      media:media_assets(url)
+      media:media_assets!media_asset_id(id, url)
     `)
     .not('published_at', 'is', null)
     .order('published_at', { ascending: false });

@@ -5,7 +5,7 @@ import { createClient } from '@/utils/supabase/server'
 import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function getOrganizationMembers() {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
   const { data, error } = await supabase
     .from('organization_members')
     .select('*')
@@ -19,7 +19,7 @@ export async function getOrganizationMembers() {
 }
 
 export async function getOrganizationMemberById(id: string) {
-  const supabase = await createClient()
+  const supabase = supabaseAdmin
   const { data, error } = await supabase
     .from('organization_members')
     .select('*')

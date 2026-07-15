@@ -2,10 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, BookOpen, Star, Users, Trophy, ChevronRight, Award, ShieldCheck, Clock, Calendar } from 'lucide-react';
 import { BrandIcon } from '@/components/ui/BrandIcon';
-import { createClient } from '@/utils/supabase/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-export default async function HomePage() {
-  const supabase = await createClient();
+export default async function Beranda() {
+  const supabase = supabaseAdmin;
 
   // Fetch top 3 active programs
   const { data: programsData } = await supabase
@@ -13,7 +13,7 @@ export default async function HomePage() {
     .select(`
       *,
       category:categories(name),
-      media:media_assets(url)
+      media:media_assets!media_asset_id(id, url)
     `)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
@@ -26,7 +26,7 @@ export default async function HomePage() {
     .from('articles')
     .select(`
       *,
-      media:media_assets(url)
+      media:media_assets!media_asset_id(id, url)
     `)
     .not('published_at', 'is', null)
     .order('published_at', { ascending: false })
