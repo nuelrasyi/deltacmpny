@@ -9,6 +9,8 @@ export const metadata = {
   title: 'Tentang Kami - DIL',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function AboutPage() {
   const profile = await getCompanyProfile();
   
