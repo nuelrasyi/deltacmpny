@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from '@/utils/supabase/admin'
 import { createClient } from '@/utils/supabase/server'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function createAdminUser(formData: FormData) {
   const name = formData.get('name') as string
